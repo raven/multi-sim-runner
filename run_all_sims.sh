@@ -7,14 +7,16 @@ export running_sims=$(
 )
 
 export most_recently_built_app=$(
-  find "$HOME/Library/Developer/Xcode/DerivedData" -type d -name '*.app' -print0 | \
+  find "$HOME/Library/Developer/Xcode/DerivedData" "./DerivedData" -type d -name '*.app' -print0 | \
   xargs -0 stat -f "%m %N"                                                       | \
   sort -rn                                                                       | \
   head -1                                                                        | \
   cut -f2- -d" "
 )
+echo "Most recently built app: $most_recently_built_app"
 
 export most_recently_built_app_bundle_id=$(/usr/libexec/PlistBuddy -c "Print :CFBundleIdentifier" "${most_recently_built_app}/Info.plist")
+echo "Most recently built app bundle id: $most_recently_built_app_bundle_id"
 
 install_app_and_launch () {
     xcrun simctl install "$1" $most_recently_built_app
